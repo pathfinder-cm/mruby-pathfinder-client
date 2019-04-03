@@ -50,6 +50,45 @@ module Pathfinder
       return res
     end
 
+    def mark_container_as_provisioned(cluster_name:, authentication_token:, container:)
+      payload = {
+        cluster_name: cluster_name,
+        hostname: container.hostname
+      }.to_json
+      res = @client.request(
+        'POST',
+        '/api/v1/node/containers/mark_provisioned',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def mark_container_as_provision_error(cluster_name:, authentication_token:, container:)
+      payload = {
+        cluster_name: cluster_name,
+        hostname: container.hostname
+      }.to_json
+      res = @client.request(
+        'POST',
+        '/api/v1/node/containers/mark_provision_error',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def mark_container_as_deleted(cluster_name:, authentication_token:, container:)
+      payload = {
+        cluster_name: cluster_name,
+        hostname: container.hostname
+      }.to_json
+      res = @client.request(
+        'POST',
+        '/api/v1/node/containers/mark_deleted',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
     private
 
     def craft_request_body(payload:, authentication_token: nil)

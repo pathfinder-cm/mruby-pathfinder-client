@@ -41,11 +41,47 @@ module Pathfinder
       assert_equal(200, response.code)
     end
 
-    # NOTE: test node must already have assigned container
+    # NOTE: test node must already have assigned container and is not 'DELETED'
     def test_update_ipaddress_success
       pathfinder_node = PathfinderNode.new(port: 3000)
       token = register
       response = pathfinder_node.update_ipaddress(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: token,
+        container: shared_vars[:container]
+      )
+      assert_equal(200, response.code)
+    end
+
+    # NOTE: test node must already have assigned container with status: 'SCHEDULED'
+    def test_mark_container_as_provisioned_success
+      pathfinder_node = PathfinderNode.new(port: 3000)
+      token = register
+      response = pathfinder_node.mark_container_as_provisioned(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: token,
+        container: shared_vars[:container]
+      )
+      assert_equal(200, response.code)
+    end
+
+    # NOTE: test node must already have assigned container with status: 'SCHEDULED'
+    def test_mark_container_as_provision_error_success
+      pathfinder_node = PathfinderNode.new(port: 3000)
+      token = register
+      response = pathfinder_node.mark_container_as_provision_error(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: token,
+        container: shared_vars[:container]
+      )
+      assert_equal(200, response.code)
+    end
+
+    # NOTE: test node must already have assigned container with status: 'SCHEDULE_DELETION'
+    def test_mark_container_as_deleted_success
+      pathfinder_node = PathfinderNode.new(port: 3000)
+      token = register
+      response = pathfinder_node.mark_container_as_deleted(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
         container: shared_vars[:container]

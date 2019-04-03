@@ -6,7 +6,10 @@ This repository contains Pathfinder client gem for mruby.
 
 Install these dependencies:
 
+- `build-essential`
+- `bison`
 - `libossp-uuid-dev`
+- `ruby`
 
 Add this line on mruby `build_config.rb` before compilation.
 

@@ -1,3 +1,5 @@
+require(File.expand_path('node', File.dirname(__FILE__)))
+
 module Pathfinder
   class PathfinderExt
     def initialize(opts = {})
@@ -13,6 +15,18 @@ module Pathfinder
       res = @client.request(
         'GET',
         '/api/v1/ext_app/nodes',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def get_node(cluster_name:, authentication_token:, node:)
+      payload = {
+        cluster_name: cluster_name
+      }.to_json
+      res = @client.request(
+        'GET',
+        "/api/v1/ext_app/nodes/#{node.hostname}",
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
       return res

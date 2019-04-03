@@ -4,6 +4,10 @@ This repository contains Pathfinder client gem for mruby.
 
 ## Getting started
 
+Install these dependencies:
+
+- `libossp-uuid-dev`
+
 Add this line on mruby `build_config.rb` before compilation.
 
 ```

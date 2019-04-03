@@ -35,6 +35,20 @@ module Pathfinder
       return res
     end
 
+    def update_ipaddress(cluster_name:, authentication_token:, hostname:, ipaddress:)
+      payload = {
+        cluster_name: cluster_name,
+        hostname: hostname,
+        ipaddress: ipaddress
+      }.to_json
+      res = @client.request(
+        'POST',
+        '/api/v1/node/containers/ipaddress',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
     private
 
     def craft_request_body(payload:, authentication_token: nil)

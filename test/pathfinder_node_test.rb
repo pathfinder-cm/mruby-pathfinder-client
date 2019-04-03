@@ -39,6 +39,19 @@ module Pathfinder
       )
       assert_equal(200, response.code)
     end
+
+    # NOTE: test node must already have assigned container
+    def test_update_ipaddress_success
+      pathfinder_node = PathfinderNode.new(port: 3000)
+      token = register
+      response = pathfinder_node.update_ipaddress(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: token,
+        hostname: 'test-01',
+        ipaddress: '127.0.0.1'
+      )
+      assert_equal(200, response.code)
+    end
   end
 end
 

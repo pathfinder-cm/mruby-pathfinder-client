@@ -1,10 +1,11 @@
 module Pathfinder
   class Container
-    attr_reader :hostname, :ipaddress
+    attr_reader :hostname, :ipaddress, :image
 
-    def initialize(hostname:, ipaddress:)
+    def initialize(hostname:, ipaddress:, image:)
       @hostname = hostname
       @ipaddress = ipaddress
+      @image = image
     end
   end
 end

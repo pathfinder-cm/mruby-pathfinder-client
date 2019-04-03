@@ -7,6 +7,7 @@ module Pathfinder
         cluster_name: 'default',
         authentication_token: 'pathfinder',
         node: Node.new(hostname: 'test-01', ipaddress: '127.0.0.1'),
+        container: Container.new(hostname: 'test-01', ipaddress: '127.0.0.1', image: '18.04'),
       }
     end
 
@@ -27,6 +28,91 @@ module Pathfinder
         node: shared_vars[:node]
       )
       assert_equal(200, response.code)
+    end
+
+    def test_get_containers_success
+      pathfinder_ext = PathfinderExt.new(port: 3000)
+      response = pathfinder_ext.get_containers(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token]
+      )
+      assert_equal(200, response.code)
+    end
+
+    def test_get_container_success
+      pathfinder_ext = PathfinderExt.new(port: 3000)
+      container = Container.new(hostname: Uuid.uuid, ipaddress: '127.0.0.1', image: '18.04')
+      pathfinder_ext.create_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+      response = pathfinder_ext.get_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+      assert_equal(200, response.code)
+      pathfinder_ext.delete_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+    end
+
+    def test_create_container_success
+      pathfinder_ext = PathfinderExt.new(port: 3000)
+      container = Container.new(hostname: Uuid.uuid, ipaddress: '127.0.0.1', image: '18.04')
+      response = pathfinder_ext.create_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+      assert_equal(200, response.code)
+      pathfinder_ext.delete_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+    end
+
+    def test_delete_container_success
+      pathfinder_ext = PathfinderExt.new(port: 3000)
+      container = Container.new(hostname: Uuid.uuid, ipaddress: '127.0.0.1', image: '18.04')
+      pathfinder_ext.create_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+      response = pathfinder_ext.delete_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+      assert_equal(200, response.code)
+    end
+
+    def test_reschedule_container_success
+      pathfinder_ext = PathfinderExt.new(port: 3000)
+      container = Container.new(hostname: Uuid.uuid, ipaddress: '127.0.0.1', image: '18.04')
+      pathfinder_ext.create_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+      response = pathfinder_ext.reschedule_container(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: shared_vars[:authentication_token],
+        container: container
+      )
+      assert_equal(200, response.code)
+      2.times { 
+        pathfinder_ext.delete_container(
+          cluster_name: shared_vars[:cluster_name],
+          authentication_token: shared_vars[:authentication_token],
+          container: container
+        ) 
+      }
     end
   end
 end

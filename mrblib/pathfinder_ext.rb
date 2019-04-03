@@ -1,4 +1,5 @@
 require(File.expand_path('node', File.dirname(__FILE__)))
+require(File.expand_path('container', File.dirname(__FILE__)))
 
 module Pathfinder
   class PathfinderExt
@@ -27,6 +28,70 @@ module Pathfinder
       res = @client.request(
         'GET',
         "/api/v1/ext_app/nodes/#{node.hostname}",
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def get_containers(cluster_name:, authentication_token:)
+      payload = {
+        cluster_name: cluster_name
+      }.to_json
+      res = @client.request(
+        'GET',
+        '/api/v1/ext_app/containers',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def get_container(cluster_name:, authentication_token:, container:)
+      payload = {
+        cluster_name: cluster_name
+      }.to_json
+      res = @client.request(
+        'GET',
+        "/api/v1/ext_app/containers/#{container.hostname}",
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def create_container(cluster_name:, authentication_token:, container:)
+      payload = {
+        cluster_name: cluster_name,
+        container: {
+          hostname: container.hostname,
+          image: container.image
+        }
+      }.to_json
+      res = @client.request(
+        'POST',
+        '/api/v1/ext_app/containers',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def delete_container(cluster_name:, authentication_token:, container:)
+      payload = {
+        cluster_name: cluster_name
+      }.to_json
+      res = @client.request(
+        'POST',
+        "/api/v1/ext_app/containers/#{container.hostname}/schedule_deletion",
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
+    def reschedule_container(cluster_name:, authentication_token:, container:)
+      payload = {
+        cluster_name: cluster_name
+      }.to_json
+      res = @client.request(
+        'POST',
+        "/api/v1/ext_app/containers/#{container.hostname}/reschedule",
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
       return res

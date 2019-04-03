@@ -8,6 +8,13 @@ module Pathfinder
         cluster_password: 'pathfinder',
         node: Node.new(hostname: 'test-01', ipaddress: '127.0.0.1'),
         container: Container.new(hostname: 'test-01', ipaddress: '127.0.0.1'),
+        metrics: {
+          memory: {
+            free: 80,
+            used: 20,
+            total: 100
+          }
+        }
       }
     end
 
@@ -85,6 +92,17 @@ module Pathfinder
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
         container: shared_vars[:container]
+      )
+      assert_equal(200, response.code)
+    end
+
+    def test_store_metrics_success
+      pathfinder_node = PathfinderNode.new(port: 3000)
+      token = register
+      response = pathfinder_node.store_metrics(
+        cluster_name: shared_vars[:cluster_name],
+        authentication_token: token,
+        metrics: shared_vars[:metrics]
       )
       assert_equal(200, response.code)
     end

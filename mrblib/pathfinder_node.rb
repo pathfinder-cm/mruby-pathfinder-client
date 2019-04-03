@@ -89,6 +89,23 @@ module Pathfinder
       return res
     end
 
+    def store_metrics(cluster_name:, authentication_token:, metrics:)
+      payload = {
+        cluster_name: cluster_name,
+        memory: {
+          free: metrics[:memory][:free],
+          used: metrics[:memory][:used],
+          total: metrics[:memory][:total]
+        }
+      }.to_json
+      res = @client.request(
+        'POST',
+        '/api/v1/node/nodes/store_metrics',
+        craft_request_body(payload: payload, authentication_token: authentication_token)
+      )
+      return res
+    end
+
     private
 
     def craft_request_body(payload:, authentication_token: nil)

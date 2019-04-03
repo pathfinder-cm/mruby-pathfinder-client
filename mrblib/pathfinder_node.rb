@@ -1,3 +1,5 @@
+require(File.expand_path('node', File.dirname(__FILE__)))
+
 module Pathfinder
   class PathfinderNode
       def initialize(opts = {})
@@ -6,12 +8,12 @@ module Pathfinder
         @client = SimpleHttp.new(opts[:scheme], opts[:address], opts[:port])
       end
 
-    def register(cluster_name:, cluster_password:, node_hostname:, node_ipaddress:)
+    def register(cluster_name:, cluster_password:, node:)
       payload = {
         cluster_name: cluster_name,
         password: cluster_password,
-        node_hostname: node_hostname,
-        node_ipaddress: node_ipaddress
+        node_hostname: node.hostname,
+        node_ipaddress: node.ipaddress
       }.to_json
       res = @client.request(
         'POST',

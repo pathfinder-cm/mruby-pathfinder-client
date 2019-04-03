@@ -6,8 +6,7 @@ module Pathfinder
       {
         cluster_name: 'default',
         cluster_password: 'pathfinder',
-        node_hostname: 'test-01',
-        node_ipaddress: '127.0.0.1'
+        node: Node.new(hostname: 'test-01', ipaddress: '127.0.0.1')
       }
     end
 
@@ -16,10 +15,9 @@ module Pathfinder
       response = pathfinder_node.register(
         cluster_name: shared_vars[:cluster_name],
         cluster_password: shared_vars[:cluster_password],
-        node_hostname: shared_vars[:node_hostname],
-        node_ipaddress: shared_vars[:node_ipaddress]
+        node: shared_vars[:node]
       )
-      assert_equal(200, response)
+      assert_equal(200, response.code)
     end
   end
 end

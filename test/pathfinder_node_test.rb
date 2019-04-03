@@ -6,7 +6,8 @@ module Pathfinder
       {
         cluster_name: 'default',
         cluster_password: 'pathfinder',
-        node: Node.new(hostname: 'test-01', ipaddress: '127.0.0.1')
+        node: Node.new(hostname: 'test-01', ipaddress: '127.0.0.1'),
+        container: Container.new(hostname: 'test-01', ipaddress: '127.0.0.1'),
       }
     end
 
@@ -47,8 +48,7 @@ module Pathfinder
       response = pathfinder_node.update_ipaddress(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
-        hostname: 'test-01',
-        ipaddress: '127.0.0.1'
+        container: shared_vars[:container]
       )
       assert_equal(200, response.code)
     end

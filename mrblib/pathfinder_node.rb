@@ -1,4 +1,5 @@
 require(File.expand_path('node', File.dirname(__FILE__)))
+require(File.expand_path('container', File.dirname(__FILE__)))
 
 module Pathfinder
   class PathfinderNode
@@ -35,11 +36,11 @@ module Pathfinder
       return res
     end
 
-    def update_ipaddress(cluster_name:, authentication_token:, hostname:, ipaddress:)
+    def update_ipaddress(cluster_name:, authentication_token:, container:)
       payload = {
         cluster_name: cluster_name,
-        hostname: hostname,
-        ipaddress: ipaddress
+        hostname: container.hostname,
+        ipaddress: container.ipaddress
       }.to_json
       res = @client.request(
         'POST',

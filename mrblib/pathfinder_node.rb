@@ -3,11 +3,11 @@ require(File.expand_path('container', File.dirname(__FILE__)))
 
 module Pathfinder
   class PathfinderNode
-      def initialize(opts = {})
-        opts[:scheme] ||= 'http'
-        opts[:address] ||= 'localhost'
-        @client = SimpleHttp.new(opts[:scheme], opts[:address], opts[:port])
-      end
+    def initialize(opts = {})
+      opts[:scheme] ||= 'http'
+      opts[:address] ||= 'localhost'
+      @client = SimpleHttp.new(opts[:scheme], opts[:address], opts[:port])
+    end
 
     def register(cluster_name:, cluster_password:, node:)
       payload = {
@@ -21,7 +21,11 @@ module Pathfinder
         '/api/v1/node/register',
         craft_request_body(payload: payload)
       )
-      return res
+      if res.code == 200
+        return true, JSON.parse(res.body)['data']['authentication_token']
+      else
+        return false, nil
+      end
     end
 
     def get_scheduled_containers(cluster_name:, authentication_token:)
@@ -33,7 +37,18 @@ module Pathfinder
         '/api/v1/node/containers/scheduled',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        items = JSON.parse(res.body)['data']['items']
+        containers = items.map{ |m| Container.new(
+          hostname: m['hostname'],
+          ipaddress: m['ipaddress'],
+          image: m['image'],
+          status: m['status']
+        )}
+        return true, containers
+      else
+        return false, nil
+      end
     end
 
     def update_ipaddress(cluster_name:, authentication_token:, container:)
@@ -47,7 +62,11 @@ module Pathfinder
         '/api/v1/node/containers/ipaddress',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        return true
+      else
+        return false
+      end
     end
 
     def mark_container_as_provisioned(cluster_name:, authentication_token:, container:)
@@ -60,7 +79,18 @@ module Pathfinder
         '/api/v1/node/containers/mark_provisioned',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        container = Container.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress'],
+          image: item['image'],
+          status: item['status']
+        )
+        return true, container
+      else
+        return false, nil
+      end
     end
 
     def mark_container_as_provision_error(cluster_name:, authentication_token:, container:)
@@ -73,7 +103,18 @@ module Pathfinder
         '/api/v1/node/containers/mark_provision_error',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        container = Container.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress'],
+          image: item['image'],
+          status: item['status']
+        )
+        return true, container
+      else
+        return false, nil
+      end
     end
 
     def mark_container_as_deleted(cluster_name:, authentication_token:, container:)
@@ -86,7 +127,18 @@ module Pathfinder
         '/api/v1/node/containers/mark_deleted',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        container = Container.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress'],
+          image: item['image'],
+          status: item['status']
+        )
+        return true, container
+      else
+        return false, nil
+      end
     end
 
     def store_metrics(cluster_name:, authentication_token:, metrics:)
@@ -103,7 +155,11 @@ module Pathfinder
         '/api/v1/node/nodes/store_metrics',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        return true
+      else
+        return false
+      end
     end
 
     private

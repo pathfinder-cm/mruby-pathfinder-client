@@ -20,91 +20,91 @@ module Pathfinder
 
     def register
       pathfinder_node = PathfinderNode.new(port: 3000)
-      response = pathfinder_node.register(
+      ok, authentication_token = pathfinder_node.register(
         cluster_name: shared_vars[:cluster_name],
         cluster_password: shared_vars[:cluster_password],
         node: shared_vars[:node]
       )
-      JSON.parse(response.body)['data']['authentication_token']
+      authentication_token
     end
 
     def test_register_success
       pathfinder_node = PathfinderNode.new(port: 3000)
-      response = pathfinder_node.register(
+      ok, _ = pathfinder_node.register(
         cluster_name: shared_vars[:cluster_name],
         cluster_password: shared_vars[:cluster_password],
         node: shared_vars[:node]
       )
-      assert_equal(200, response.code)
+      assert_equal(true, ok)
     end
 
     def test_get_scheduled_containers_success
       pathfinder_node = PathfinderNode.new(port: 3000)
       token = register
-      response = pathfinder_node.get_scheduled_containers(
+      ok, _ = pathfinder_node.get_scheduled_containers(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token
       )
-      assert_equal(200, response.code)
+      assert_equal(true, ok)
     end
 
     # NOTE: test node must already have assigned container and is not 'DELETED'
     def test_update_ipaddress_success
       pathfinder_node = PathfinderNode.new(port: 3000)
       token = register
-      response = pathfinder_node.update_ipaddress(
+      ok = pathfinder_node.update_ipaddress(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
         container: shared_vars[:container]
       )
-      assert_equal(200, response.code)
+      assert_equal(true, ok)
     end
 
     # NOTE: test node must already have assigned container with status: 'SCHEDULED'
     def test_mark_container_as_provisioned_success
       pathfinder_node = PathfinderNode.new(port: 3000)
       token = register
-      response = pathfinder_node.mark_container_as_provisioned(
+      ok, _ = pathfinder_node.mark_container_as_provisioned(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
         container: shared_vars[:container]
       )
-      assert_equal(200, response.code)
+      assert_equal(true, ok)
     end
 
     # NOTE: test node must already have assigned container with status: 'SCHEDULED'
     def test_mark_container_as_provision_error_success
       pathfinder_node = PathfinderNode.new(port: 3000)
       token = register
-      response = pathfinder_node.mark_container_as_provision_error(
+      ok, _ = pathfinder_node.mark_container_as_provision_error(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
         container: shared_vars[:container]
       )
-      assert_equal(200, response.code)
+      assert_equal(true, ok)
     end
 
     # NOTE: test node must already have assigned container with status: 'SCHEDULE_DELETION'
     def test_mark_container_as_deleted_success
       pathfinder_node = PathfinderNode.new(port: 3000)
       token = register
-      response = pathfinder_node.mark_container_as_deleted(
+      ok, _ = pathfinder_node.mark_container_as_deleted(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
         container: shared_vars[:container]
       )
-      assert_equal(200, response.code)
+      assert_equal(true, ok)
     end
 
     def test_store_metrics_success
       pathfinder_node = PathfinderNode.new(port: 3000)
       token = register
-      response = pathfinder_node.store_metrics(
+      ok = pathfinder_node.store_metrics(
         cluster_name: shared_vars[:cluster_name],
         authentication_token: token,
         metrics: shared_vars[:metrics]
       )
-      assert_equal(200, response.code)
+      assert_equal(true, ok)
     end
   end
 end

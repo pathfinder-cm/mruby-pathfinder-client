@@ -18,7 +18,16 @@ module Pathfinder
         '/api/v1/ext_app/nodes',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        items = JSON.parse(res.body)['data']['items']
+        nodes = items.map{ |m| Node.new(
+          hostname: m['hostname'],
+          ipaddress: m['ipaddress']
+        )}
+        return true, nodes
+      else
+        return false, nil
+      end
     end
 
     def get_node(cluster_name:, authentication_token:, node:)
@@ -30,7 +39,16 @@ module Pathfinder
         "/api/v1/ext_app/nodes/#{node.hostname}",
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        node = Node.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress']
+        )
+        return true, node
+      else
+        return false, nil
+      end
     end
 
     def get_containers(cluster_name:, authentication_token:)
@@ -42,7 +60,18 @@ module Pathfinder
         '/api/v1/ext_app/containers',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        items = JSON.parse(res.body)['data']['items']
+        containers = items.map{ |m| Container.new(
+          hostname: m['hostname'],
+          ipaddress: m['ipaddress'],
+          image: m['image'],
+          status: m['status']
+        )}
+        return true, containers
+      else
+        return false, nil
+      end
     end
 
     def get_container(cluster_name:, authentication_token:, container:)
@@ -54,7 +83,18 @@ module Pathfinder
         "/api/v1/ext_app/containers/#{container.hostname}",
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        container = Container.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress'],
+          image: item['image'],
+          status: item['status']
+        )
+        return true, container
+      else
+        return false, nil
+      end
     end
 
     def create_container(cluster_name:, authentication_token:, container:)
@@ -70,7 +110,18 @@ module Pathfinder
         '/api/v1/ext_app/containers',
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        container = Container.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress'],
+          image: item['image'],
+          status: item['status']
+        )
+        return true, container
+      else
+        return false, nil
+      end
     end
 
     def delete_container(cluster_name:, authentication_token:, container:)
@@ -82,7 +133,18 @@ module Pathfinder
         "/api/v1/ext_app/containers/#{container.hostname}/schedule_deletion",
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        container = Container.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress'],
+          image: item['image'],
+          status: item['status']
+        )
+        return true, container
+      else
+        return false, nil
+      end
     end
 
     def reschedule_container(cluster_name:, authentication_token:, container:)
@@ -94,7 +156,18 @@ module Pathfinder
         "/api/v1/ext_app/containers/#{container.hostname}/reschedule",
         craft_request_body(payload: payload, authentication_token: authentication_token)
       )
-      return res
+      if res.code == 200
+        item = JSON.parse(res.body)['data']
+        container = Container.new(
+          hostname: item['hostname'],
+          ipaddress: item['ipaddress'],
+          image: item['image'],
+          status: item['status']
+        )
+        return true, container
+      else
+        return false, nil
+      end
     end
 
     private

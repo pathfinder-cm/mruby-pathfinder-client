@@ -3,20 +3,20 @@ require(File.expand_path('container', File.dirname(__FILE__)))
 
 module Pathfinder
   class PathfinderExt
-    def initialize(opts = {})
-      opts[:scheme] ||= 'http'
-      opts[:address] ||= 'localhost'
-      @client = SimpleHttp.new(opts[:scheme], opts[:address], opts[:port])
+    def initialize(cluster_name:, authentication_token:, scheme: 'http', address: 'localhost', port: 80)
+      @cluster_name = cluster_name
+      @authentication_token = authentication_token
+      @client = SimpleHttp.new(scheme, address, port)
     end
 
-    def get_nodes(cluster_name:, authentication_token:)
+    def get_nodes
       payload = {
-        cluster_name: cluster_name
+        cluster_name: @cluster_name
       }.to_json
       res = @client.request(
         'GET',
         '/api/v1/ext_app/nodes',
-        craft_request_body(payload: payload, authentication_token: authentication_token)
+        craft_request_body(payload: payload, authentication_token: @authentication_token)
       )
       if res.code == 200
         items = JSON.parse(res.body)['data']['items']
@@ -30,14 +30,14 @@ module Pathfinder
       end
     end
 
-    def get_node(cluster_name:, authentication_token:, node:)
+    def get_node(node:)
       payload = {
-        cluster_name: cluster_name
+        cluster_name: @cluster_name
       }.to_json
       res = @client.request(
         'GET',
         "/api/v1/ext_app/nodes/#{node.hostname}",
-        craft_request_body(payload: payload, authentication_token: authentication_token)
+        craft_request_body(payload: payload, authentication_token: @authentication_token)
       )
       if res.code == 200
         item = JSON.parse(res.body)['data']
@@ -51,14 +51,14 @@ module Pathfinder
       end
     end
 
-    def get_containers(cluster_name:, authentication_token:)
+    def get_containers
       payload = {
-        cluster_name: cluster_name
+        cluster_name: @cluster_name
       }.to_json
       res = @client.request(
         'GET',
         '/api/v1/ext_app/containers',
-        craft_request_body(payload: payload, authentication_token: authentication_token)
+        craft_request_body(payload: payload, authentication_token: @authentication_token)
       )
       if res.code == 200
         items = JSON.parse(res.body)['data']['items']
@@ -74,14 +74,14 @@ module Pathfinder
       end
     end
 
-    def get_container(cluster_name:, authentication_token:, container:)
+    def get_container(container:)
       payload = {
-        cluster_name: cluster_name
+        cluster_name: @cluster_name
       }.to_json
       res = @client.request(
         'GET',
         "/api/v1/ext_app/containers/#{container.hostname}",
-        craft_request_body(payload: payload, authentication_token: authentication_token)
+        craft_request_body(payload: payload, authentication_token: @authentication_token)
       )
       if res.code == 200
         item = JSON.parse(res.body)['data']
@@ -97,9 +97,9 @@ module Pathfinder
       end
     end
 
-    def create_container(cluster_name:, authentication_token:, container:)
+    def create_container(container:)
       payload = {
-        cluster_name: cluster_name,
+        cluster_name: @cluster_name,
         container: {
           hostname: container.hostname,
           image: container.image
@@ -108,7 +108,7 @@ module Pathfinder
       res = @client.request(
         'POST',
         '/api/v1/ext_app/containers',
-        craft_request_body(payload: payload, authentication_token: authentication_token)
+        craft_request_body(payload: payload, authentication_token: @authentication_token)
       )
       if res.code == 200
         item = JSON.parse(res.body)['data']
@@ -124,14 +124,14 @@ module Pathfinder
       end
     end
 
-    def delete_container(cluster_name:, authentication_token:, container:)
+    def delete_container(container:)
       payload = {
-        cluster_name: cluster_name
+        cluster_name: @cluster_name
       }.to_json
       res = @client.request(
         'POST',
         "/api/v1/ext_app/containers/#{container.hostname}/schedule_deletion",
-        craft_request_body(payload: payload, authentication_token: authentication_token)
+        craft_request_body(payload: payload, authentication_token: @authentication_token)
       )
       if res.code == 200
         item = JSON.parse(res.body)['data']
@@ -147,14 +147,14 @@ module Pathfinder
       end
     end
 
-    def reschedule_container(cluster_name:, authentication_token:, container:)
+    def reschedule_container(container:)
       payload = {
-        cluster_name: cluster_name
+        cluster_name: @cluster_name
       }.to_json
       res = @client.request(
         'POST',
         "/api/v1/ext_app/containers/#{container.hostname}/reschedule",
-        craft_request_body(payload: payload, authentication_token: authentication_token)
+        craft_request_body(payload: payload, authentication_token: @authentication_token)
       )
       if res.code == 200
         item = JSON.parse(res.body)['data']
